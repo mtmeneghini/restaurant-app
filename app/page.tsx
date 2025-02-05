@@ -1,6 +1,30 @@
+'use client'
+
+import { useAuth } from '../contexts/AuthContext'
+import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 import Image from "next/image";
 
 export default function Home() {
+  const { user, loading } = useAuth()
+  const router = useRouter()
+
+  useEffect(() => {
+    if (!loading && !user) {
+      router.push('/login')
+    } else if (!loading && user) {
+      router.push('/profile')
+    }
+  }, [user, loading, router])
+
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-lg">Loading...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
