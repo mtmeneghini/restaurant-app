@@ -1,0 +1,8 @@
+
+when dealing with the database:
+To update the existing schema, create a migration file that only includes the changes we want to make
+
+
+
+
+
