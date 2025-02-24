@@ -170,10 +170,6 @@ export default function ProfilePage() {
     return () => window.removeEventListener('storage', handleSidebarChange)
   }, [])
 
-  const handleNavigation = (path: string) => {
-    router.push(path)
-  }
-
   const handleEditToggle = () => {
     setIsEditing(!isEditing)
     setUpdateError(null)
@@ -726,7 +722,7 @@ export default function ProfilePage() {
             </h3>
             <p className="text-gray-600">
               Bem-vindo ao seu painel de gestão de restaurante. Criamos um perfil padrão para seu restaurante.
-              Você pode personalizá-lo a qualquer momento clicando no botão "Editar Informações".
+              Você pode personalizá-lo a qualquer momento clicando no botão &ldquo;Editar Informações&rdquo;.
             </p>
           </div>
           

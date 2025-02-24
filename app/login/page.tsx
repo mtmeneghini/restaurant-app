@@ -4,14 +4,15 @@ import { Auth } from '@supabase/auth-ui-react'
 import { ThemeSupa } from '@supabase/auth-ui-shared'
 import { supabase } from '../../utils/supabase'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, Suspense } from 'react'
 import { useAuth } from '../../contexts/AuthContext'
 import { colors, typography } from '../../styles/design-system'
 import Header from '../../components/Header'
 import Footer from '../../components/Footer'
 import Link from 'next/link'
 
-export default function LoginPage() {
+// Create a separate client component for the auth content
+function AuthContent() {
   const { user, loading } = useAuth()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -81,6 +82,107 @@ export default function LoginPage() {
   }
 
   return (
+    <div className="w-full max-w-md space-y-8">
+      <div className="text-center">
+        <h1 
+          className="mb-4"
+          style={{ 
+            fontSize: typography.headings.h2.fontSize,
+            lineHeight: typography.headings.h2.lineHeight,
+            fontWeight: typography.fontWeight.semibold,
+            color: colors.brand.primary,
+            letterSpacing: typography.headings.h2.letterSpacing
+          }}
+        >
+          {isSignUp ? 'Crie sua conta' : 'Acesse sua conta'}
+        </h1>
+        <p
+          style={{ 
+            fontSize: typography.fontSize.lg,
+            lineHeight: typography.lineHeight.relaxed,
+            color: colors.ui.gray[600]
+          }}
+        >
+          {isSignUp 
+            ? 'Comece agora a gerenciar seu restaurante de forma simples e eficiente' 
+            : 'Gerencie seu restaurante de forma simples e eficiente'}
+        </p>
+      </div>
+      
+      <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
+        <Auth
+          key={initialView}
+          supabaseClient={supabase}
+          appearance={{ theme: authTheme }}
+          view={initialView}
+          showLinks={false}
+          providers={[]}
+          socialLayout="horizontal"
+          localization={{
+            variables: {
+              sign_in: {
+                email_label: 'Email',
+                password_label: 'Senha',
+                email_input_placeholder: 'seu@email.com',
+                password_input_placeholder: 'Sua senha',
+                button_label: 'Entrar',
+                loading_button_label: 'Entrando...',
+                social_provider_text: 'Entrar com {{provider}}',
+              },
+              sign_up: {
+                email_label: 'Email',
+                password_label: 'Senha',
+                email_input_placeholder: 'seu@email.com',
+                password_input_placeholder: 'Sua senha',
+                button_label: 'Criar conta',
+                loading_button_label: 'Criando conta...',
+                social_provider_text: 'Cadastrar com {{provider}}',
+              },
+              forgotten_password: {
+                email_label: 'Email',
+                password_label: 'Senha',
+                email_input_placeholder: 'seu@email.com',
+                button_label: 'Enviar instruções',
+                loading_button_label: 'Enviando instruções...',
+                link_text: 'Esqueceu sua senha?',
+              },
+            },
+          }}
+          redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/profile`}
+        />
+        <div className="mt-4 text-center">
+          {isSignUp ? (
+            <Link
+              href="/login"
+              className="text-sm hover:text-gray-700 transition-colors"
+              style={{ 
+                color: colors.ui.gray[600],
+                fontSize: typography.fontSize.sm
+              }}
+            >
+              Já tem uma conta? Entrar
+            </Link>
+          ) : (
+            <Link
+              href="/login?view=sign_up"
+              className="text-sm hover:text-gray-700 transition-colors"
+              style={{ 
+                color: colors.ui.gray[600],
+                fontSize: typography.fontSize.sm
+              }}
+            >
+              Não tem uma conta? Cadastre-se
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
+  )
+}
+
+// Main page component with Suspense boundary
+export default function LoginPage() {
+  return (
     <div 
       className="min-h-screen flex flex-col"
       style={{ 
@@ -91,100 +193,18 @@ export default function LoginPage() {
       <Header />
       
       <main className="flex-grow flex items-center justify-center py-16 px-4">
-        <div className="w-full max-w-md space-y-8">
-          <div className="text-center">
-            <h1 
-              className="mb-4"
-              style={{ 
-                fontSize: typography.headings.h2.fontSize,
-                lineHeight: typography.headings.h2.lineHeight,
-                fontWeight: typography.fontWeight.semibold,
-                color: colors.brand.primary,
-                letterSpacing: typography.headings.h2.letterSpacing
-              }}
-            >
-              {isSignUp ? 'Crie sua conta' : 'Acesse sua conta'}
-            </h1>
-            <p
-              style={{ 
-                fontSize: typography.fontSize.lg,
-                lineHeight: typography.lineHeight.relaxed,
-                color: colors.ui.gray[600]
-              }}
-            >
-              {isSignUp 
-                ? 'Comece agora a gerenciar seu restaurante de forma simples e eficiente' 
-                : 'Gerencie seu restaurante de forma simples e eficiente'}
-            </p>
-          </div>
-          
-          <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-200">
-            <Auth
-              key={initialView}
-              supabaseClient={supabase}
-              appearance={{ theme: authTheme }}
-              providers={['google']}
-              view={initialView}
-              showLinks={false}
-              localization={{
-                variables: {
-                  sign_in: {
-                    email_label: 'Email',
-                    password_label: 'Senha',
-                    email_input_placeholder: 'seu@email.com',
-                    password_input_placeholder: 'Sua senha',
-                    button_label: 'Entrar',
-                    loading_button_label: 'Entrando...',
-                    social_provider_text: 'Entrar com {{provider}}',
-                  },
-                  sign_up: {
-                    email_label: 'Email',
-                    password_label: 'Senha',
-                    email_input_placeholder: 'seu@email.com',
-                    password_input_placeholder: 'Sua senha',
-                    button_label: 'Criar conta',
-                    loading_button_label: 'Criando conta...',
-                    social_provider_text: 'Cadastrar com {{provider}}',
-                  },
-                  forgotten_password: {
-                    email_label: 'Email',
-                    password_label: 'Senha',
-                    email_input_placeholder: 'seu@email.com',
-                    button_label: 'Enviar instruções',
-                    loading_button_label: 'Enviando instruções...',
-                    link_text: 'Esqueceu sua senha?',
-                  },
-                },
-              }}
-              redirectTo={`${typeof window !== 'undefined' ? window.location.origin : ''}/profile`}
-            />
-            <div className="mt-4 text-center">
-              {isSignUp ? (
-                <Link
-                  href="/login"
-                  className="text-sm hover:text-gray-700 transition-colors"
-                  style={{ 
-                    color: colors.ui.gray[600],
-                    fontSize: typography.fontSize.sm
-                  }}
-                >
-                  Já tem uma conta? Entrar
-                </Link>
-              ) : (
-                <Link
-                  href="/login?view=sign_up"
-                  className="text-sm hover:text-gray-700 transition-colors"
-                  style={{ 
-                    color: colors.ui.gray[600],
-                    fontSize: typography.fontSize.sm
-                  }}
-                >
-                  Não tem uma conta? Cadastre-se
-                </Link>
-              )}
+        <Suspense fallback={
+          <div className="flex min-h-screen items-center justify-center">
+            <div style={{ 
+              fontSize: typography.fontSize.lg,
+              color: colors.ui.gray[600]
+            }}>
+              Carregando...
             </div>
           </div>
-        </div>
+        }>
+          <AuthContent />
+        </Suspense>
       </main>
 
       <Footer />

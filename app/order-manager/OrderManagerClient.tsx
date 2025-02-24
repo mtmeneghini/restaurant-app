@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { OrderWithDetails, OrderStatus, ItemStatus, Table, TableStatus } from '../../types/orders'
 import { colors, typography } from '../../styles/design-system'
-import { PlusIcon, EllipsisVerticalIcon, MagnifyingGlassIcon, FunnelIcon, QuestionMarkCircleIcon } from '@heroicons/react/24/outline'
+import { QuestionMarkCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline'
 import ConfirmDialog from '../../components/ConfirmDialog'
 import TableManager from '../../components/TableManager'
 import OrderList from '../../components/OrderList'
@@ -29,18 +29,14 @@ export default function OrderManagerClient() {
   const [loadingData, setLoadingData] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [searchQuery, setSearchQuery] = useState('')
-  const [statusFilter, setStatusFilter] = useState<OrderStatus | 'all'>('all')
   const [selectedTable, setSelectedTable] = useState<Table | null>(null)
   const [activeDropdowns, setActiveDropdowns] = useState<Set<string>>(new Set())
   
   // Modal states
-  const [isTableModalOpen, setIsTableModalOpen] = useState(false)
   const [isCreateOrderModalOpen, setIsCreateOrderModalOpen] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
   const [isAddItemModalOpen, setIsAddItemModalOpen] = useState(false)
   
   // Form states
-  const [tableForm, setTableForm] = useState({ label: '' })
   const [selectedOrder, setSelectedOrder] = useState<OrderWithDetails | null>(null)
   const [itemForm, setItemForm] = useState({
     menuItemId: '',
@@ -240,141 +236,6 @@ export default function OrderManagerClient() {
 
     fetchRestaurantAndData()
   }, [user, router])
-
-  // Table CRUD operations
-  const handleCreateTable = async () => {
-    if (!restaurantId || !tableForm.label.trim()) return
-
-    try {
-      const { data, error } = await supabase
-        .from('tables')
-        .insert([{
-          restaurant_id: restaurantId,
-          label: tableForm.label,
-          status: 'available' as TableStatus
-        }])
-        .select()
-        .single()
-
-      if (error) throw error
-
-      setTables(prev => [...prev, data])
-      setTableForm({ label: '' })
-      setIsTableModalOpen(false)
-    } catch (error) {
-      console.error('Error creating table:', error)
-      setError('Failed to create table')
-    }
-  }
-
-  const handleUpdateTable = async (tableId: string, newLabel: string) => {
-    try {
-      const { error } = await supabase
-        .from('tables')
-        .update({ label: newLabel })
-        .eq('id', tableId)
-
-      if (error) throw error
-
-      // Update tables state
-      setTables(prev => prev.map(table =>
-        table.id === tableId ? { ...table, label: newLabel } : table
-      ))
-
-      // Update orders state to reflect the new table label
-      setOrders(prev => prev.map(order => {
-        if (order.table.id === tableId) {
-          return {
-            ...order,
-            table: {
-              ...order.table,
-              label: newLabel
-            }
-          }
-        }
-        return order
-      }))
-
-      setSelectedTable(null)
-      setTableForm({ label: '' })
-      setIsTableModalOpen(false)
-    } catch (error) {
-      console.error('Error updating table:', error)
-      setError('Failed to update table')
-    }
-  }
-
-  const handleDeleteTable = async (tableId: string) => {
-    try {
-      // Check if table has active orders
-      const hasActiveOrders = orders.some(order => 
-        order.table.id === tableId && order.status === 'active'
-      )
-
-      if (hasActiveOrders) {
-        setConfirmDialog({
-          isOpen: true,
-          title: 'Excluir Mesa com Pedidos Ativos',
-          message: 'Esta mesa possui pedidos ativos. Excluir a mesa também excluirá todos os pedidos associados. Deseja continuar?',
-          onConfirm: async () => {
-            try {
-              // First, close all active orders for this table
-              const activeOrders = orders.filter(order => 
-                order.table.id === tableId && order.status === 'active'
-              )
-
-              for (const order of activeOrders) {
-                const { error: orderError } = await supabase
-                  .from('orders')
-                  .update({ status: 'closed' })
-                  .eq('id', order.id)
-
-                if (orderError) throw orderError
-              }
-
-              // Then delete the table
-              const { error: tableError } = await supabase
-                .from('tables')
-                .delete()
-                .eq('id', tableId)
-
-              if (tableError) throw tableError
-
-              // Update local state
-              setTables(prev => prev.filter(table => table.id !== tableId))
-              setOrders(prev => prev.filter(order => order.table.id !== tableId))
-              
-              if (selectedTable?.id === tableId) {
-                setSelectedTable(null)
-              }
-            } catch (error) {
-              console.error('Error deleting table:', error)
-              setError('Failed to delete table and associated orders')
-            }
-          }
-        })
-        return
-      }
-
-      // If no active orders, proceed with normal deletion
-      const { error } = await supabase
-        .from('tables')
-        .delete()
-        .eq('id', tableId)
-
-      if (error) throw error
-
-      setTables(prev => prev.filter(table => table.id !== tableId))
-      setOrders(prev => prev.filter(order => order.table.id !== tableId))
-      
-      if (selectedTable?.id === tableId) {
-        setSelectedTable(null)
-      }
-    } catch (error) {
-      console.error('Error deleting table:', error)
-      setError('Failed to delete table')
-    }
-  }
 
   // Order CRUD operations
   const handleCreateOrder = async () => {

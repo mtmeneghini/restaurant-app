@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import LogoutButton from './LogoutButton'
 import { colors, typography } from '../styles/design-system'
-import { HomeIcon, QueueListIcon, ShoppingBagIcon, ChartBarIcon, ChevronLeftIcon, ChevronRightIcon, FireIcon } from '@heroicons/react/24/outline'
+import { HomeIcon, QueueListIcon, ShoppingBagIcon, ChartBarIcon, ChevronLeftIcon, ChevronRightIcon, FireIcon, CreditCardIcon } from '@heroicons/react/24/outline'
 import { useState } from 'react'
 
 interface NavigationHeaderProps {
@@ -129,6 +129,22 @@ export default function NavigationHeader({ selectionPath }: NavigationHeaderProp
             <ChartBarIcon className="h-5 w-5 flex-shrink-0" />
             {isExpanded && <span>Desempenho</span>}
           </Link>
+          <div className="mt-auto pt-4 border-t">
+            <Link
+              href="/subscription"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                !isExpanded && 'justify-center px-2'
+              } ${
+                selectionPath === 'Subscription'
+                  ? `bg-gray-100 font-medium text-gray-900`
+                  : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+              }`}
+              style={{ fontSize: typography.fontSize.sm }}
+            >
+              <CreditCardIcon className="h-5 w-5 flex-shrink-0" />
+              {isExpanded && <span>Assinatura</span>}
+            </Link>
+          </div>
         </div>
       </nav>
 

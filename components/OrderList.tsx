@@ -1,7 +1,6 @@
 import { OrderWithDetails, OrderStatus, ItemStatus } from '../types/orders'
 import { colors, typography } from '../styles/design-system'
 import { PlusIcon, EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import OrderItem from './OrderItem'
 import Modal from './Modal'
 import { useState } from 'react'
 

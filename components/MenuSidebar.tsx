@@ -1,7 +1,7 @@
 'use client'
 
 import { MenuWithDetails, MenuItem } from '../types/menu'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { 
   ChevronDownIcon, 
   ChevronRightIcon, 
@@ -9,8 +9,7 @@ import {
   DocumentTextIcon, 
   PencilSquareIcon, 
   PlusCircleIcon, 
-  TrashIcon,
-  MagnifyingGlassIcon
+  TrashIcon
 } from '@heroicons/react/24/outline'
 
 interface MenuSidebarProps {

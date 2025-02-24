@@ -2,7 +2,7 @@
 
 import { Table, TableStatus } from '../types/orders'
 import { useState } from 'react'
-import { CheckCircleIcon, PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
+import { PlusIcon, PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 interface TableSelectorProps {
   tables: Table[]

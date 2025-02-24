@@ -16,6 +16,7 @@ interface OrderDetailsProps {
 const itemStatusColors: Record<ItemStatus, string> = {
   pending: 'bg-yellow-100 text-yellow-800',
   preparing: 'bg-blue-100 text-blue-800',
+  ready: 'bg-purple-100 text-purple-800',
   delivered: 'bg-green-100 text-green-800'
 }
 
@@ -119,6 +120,7 @@ export default function OrderDetails({
                     >
                       <option value="pending">Pending</option>
                       <option value="preparing">Preparing</option>
+                      <option value="ready">Ready</option>
                       <option value="delivered">Delivered</option>
                     </select>
                   </td>

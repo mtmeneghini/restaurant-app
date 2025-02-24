@@ -7,6 +7,7 @@ import Link from 'next/link'
 import { colors, typography } from '../styles/design-system'
 import Header from '../components/Header'
 import Footer from '../components/Footer'
+import Image from 'next/image'
 
 // Testimonial data
 const testimonials = [
@@ -108,13 +109,12 @@ export default function Home() {
                 </div>
               </div>
               <div className="hidden lg:block w-1/4 relative">
-                <img
+                <Image
                   src="/restaurant-worker.jpg"
                   alt="Restaurant worker using tablet for management"
+                  width={800}
+                  height={533}
                   className="absolute -right-12 top-1/2 transform -translate-y-1/2 w-[200%] max-w-none rounded-2xl object-cover"
-                  style={{
-                    aspectRatio: '600/400'
-                  }}
                 />
               </div>
             </div>
@@ -236,11 +236,11 @@ export default function Home() {
                 <div className="relative">
                   {/* Quote mark decoration */}
                   <div 
-                    className="absolute -top-8 -left-4 text-6xl opacity-10"
+                    className="text-5xl mb-4"
                     style={{ color: colors.brand.primary }}
                   >
-                    "
-        </div>
+                    &ldquo;
+                  </div>
 
                   {/* Testimonial Text */}
                   <p 

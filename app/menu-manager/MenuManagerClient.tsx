@@ -5,11 +5,15 @@ import { supabase } from '../../utils/supabase'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { MenuWithDetails, CreateMenuInput, CreateMenuGroupInput, CreateMenuItemInput, MenuItem } from '../../types/menu'
-import MenuContent from '../../components/MenuContent'
 import MenuModals from '../../components/MenuModals'
-import ConfirmDialog from '../../components/ConfirmDialog'
 import { colors, typography } from '../../styles/design-system'
 import { PlusIcon, EllipsisVerticalIcon, MagnifyingGlassIcon, FunnelIcon } from '@heroicons/react/24/outline'
+
+interface MenuGroupType {
+  id: string;
+  name: string;
+  menu_id: string;
+}
 
 export default function MenuManagerClient() {
   const { user, loading } = useAuth()
@@ -256,7 +260,7 @@ export default function MenuManagerClient() {
     }
   }
 
-  const handleUpdateGroup = async (group: any) => {
+  const handleUpdateGroup = async (group: MenuGroupType) => {
     try {
       const { error } = await supabase
         .from('menu_groups')
@@ -281,22 +285,10 @@ export default function MenuManagerClient() {
     }
   }
 
-  const handleEditGroup = (group: any) => {
+  const handleEditGroup = (group: MenuGroupType) => {
     setGroupForm({ name: group.name, menu_id: group.menu_id, id: group.id })
     setIsEditMode(true)
     setIsGroupModalOpen(true)
-  }
-
-  const handleEditItem = (item: MenuItem) => {
-    setItemForm({
-      name: item.name,
-      description: item.description,
-      price: item.price,
-      group_id: item.group_id,
-      id: item.id
-    })
-    setIsEditMode(true)
-    setIsItemModalOpen(true)
   }
 
   const handleUpdateItem = async (item: MenuItem) => {
@@ -706,7 +698,7 @@ export default function MenuManagerClient() {
           onCreateOrUpdateMenu={handleCreateMenu}
           onCreateOrUpdateGroup={() => {
             if (isEditMode && groupForm.id) {
-              handleUpdateGroup({ id: groupForm.id, name: groupForm.name })
+              handleUpdateGroup({ id: groupForm.id, name: groupForm.name, menu_id: groupForm.menu_id })
             } else if (menu) {
               handleCreateGroup(menu.id)
             }

@@ -1,7 +1,6 @@
 'use client'
 
 import { MenuGroupWithItems, MenuItem } from '../types/menu'
-import MenuItemsGrid from './MenuItemsGrid'
 import { PencilIcon, TrashIcon } from '@heroicons/react/24/outline'
 
 interface MenuContentProps {
