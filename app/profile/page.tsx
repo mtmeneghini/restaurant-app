@@ -510,7 +510,7 @@ export default function ProfilePage() {
                   color: colors.ui.gray[600]
                 }}
               >
-                Plano
+                Planos
               </label>
               <div style={{ fontSize: 'var(--body-size)', color: colors.ui.gray[900] }}>
                 Plano Gratuito

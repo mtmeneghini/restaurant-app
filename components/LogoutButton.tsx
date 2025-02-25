@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { ArrowRightOnRectangleIcon } from '@heroicons/react/24/outline'
-import { createClientComponentClient } from '@supabase/ssr'
+import { supabase } from '../utils/supabase'
 import { typography } from '../styles/design-system'
 
 interface LogoutButtonProps {
@@ -11,7 +11,6 @@ interface LogoutButtonProps {
 
 export default function LogoutButton({ isExpanded }: LogoutButtonProps) {
   const router = useRouter()
-  const supabase = createClientComponentClient()
 
   const handleLogout = async () => {
     try {
